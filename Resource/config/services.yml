@@ -1,0 +1,67 @@
+# 設定で置き換え用のパラメータ
+parameters:
+    # メールパラメータ
+    from_email: "admin@example.com"
+    to_email: "admin@example.com"
+    send_level: "NOTICE"
+    record_level: "WARNING"
+    record_deduplicated_time: "60"
+    send_deduplicated_time: "60"
+
+# カスタムハンドラー
+services:
+    plugin.error_notify.service.error_log_service:
+        class: Plugin\ErrorNotify\Service\ErrorLogService
+    plugin.error_notify.monolog.handler.error_log_db_handler:
+        class: Plugin\ErrorNotify\Monolog\Handler\ErrorLogDBHandler
+        arguments:
+            - "@doctrine.orm.entity_manager"
+            - '@plugin.error_notify.service.error_log_service'
+            - '%record_level%'
+
+    plugin.error_notify.monolog.handler.error_log_mailer_handler:
+        class: Plugin\ErrorNotify\Monolog\Handler\ErrorLogMailerHandler
+        arguments:
+            - '@swiftmailer.mailer.default.transport.real'
+            - '@plugin.error_notify.service.error_log_service'
+            - '%send_level%'
+            - "%to_email%"
+            - "%from_email%"
+
+
+# ログ計測の設定
+monolog:
+    handlers:
+        # fingers_crossed
+        main:
+            type:         fingers_crossed
+            action_level: DEBUG
+            channels: ['front', 'admin', 'php', 'app']
+            handler:    grouped
+        grouped:
+            type: group
+            members: [streamed, deduplicated_doctrine, deduplicated_mailer]
+
+        # ログファイルの保存
+        streamed:
+            type:  stream
+            path:  '%kernel.logs_dir%/%kernel.environment%.log'
+            level: debug
+            
+        
+        # DB保存きのう
+        deduplicated_doctrine:
+            type:    deduplication
+            handler: doctrine
+            time: '%record_deduplicated_time%'
+        doctrine:
+            type: service
+            id: plugin.error_notify.monolog.handler.error_log_db_handler
+        # メール送信機能
+        deduplicated_mailer:
+            type:    deduplication
+            handler: custom_mailer
+            time: '%send_deduplicated_time%'
+        custom_mailer:
+            type: service
+            id: plugin.error_notify.monolog.handler.error_log_mailer_handler

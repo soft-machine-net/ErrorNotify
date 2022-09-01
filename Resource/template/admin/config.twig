@@ -1,0 +1,260 @@
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['setting', 'error_notify', 'setting'] %}
+
+{% block title %}ErrorNotify
+{% endblock %}
+{% block sub_title %}プラグイン一覧
+{% endblock %}
+
+{% form_theme form '@admin/Form/bootstrap_4_horizontal_layout.html.twig' %}
+
+{% block stylesheet %}
+	<style>
+		table tr td {
+			padding: 5px 10px 10px 0;
+		}
+	</style>
+{% endblock stylesheet %}
+
+{% block javascript %}{% endblock javascript %}
+
+{% block main %}
+	<form role="form" method="post">
+
+		{{ form_widget(form._token) }}
+
+		<div class="c-contentsArea__cols">
+			<div class="c-contentsArea__primaryCol">
+				<div class="c-primaryCol">
+					<div class="card rounded border-0 mb-4">
+						<div class="card-header">
+							<span>メール送信機能</span>
+						</div>
+						<div class="card-body">
+							<div class="row">
+								<div class="col-3">
+									<span>送信機能</span>
+									<span class="badge badge-primary ml-1">必須</span>
+								</div>
+								<div class="col mb-2">
+									{{ form_widget(form.is_send) }}
+									{{ form_errors(form.is_send) }}
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-3">
+									<span>メール送信レベル</span>
+									<span class="badge badge-primary ml-1">必須</span>
+								</div>
+								<div class="col mb-2">
+									{{ form_widget(form.send_level) }}
+									{{ form_errors(form.send_level) }}
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-3">
+									<span>通知送信元アドレス</span>
+									<span class="badge badge-primary ml-1">必須</span>
+								</div>
+								<div class="col mb-2">
+									{{ form_widget(form.from_mail) }}
+									{{ form_errors(form.from_mail) }}
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-3">
+									<span>通知先アドレス</span>
+									<span class="badge badge-primary ml-1">必須</span>
+								</div>
+								<div class="col mb-2">
+									{{ form_widget(form.send_mail) }}
+									{{ form_errors(form.send_mail) }}
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="card rounded border-0 mb-4">
+						<div class="card-header">
+							<span>エラー記録機能</span>
+						</div>
+						<div class="card-body">
+							<div class="row">
+								<div class="col-3">
+									<span>記録機能</span>
+									<span class="badge badge-primary ml-1">必須</span>
+								</div>
+								<div class="col mb-2">
+									{{ form_widget(form.is_record) }}
+									{{ form_errors(form.is_record) }}
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-3">
+									<span>記録レベル</span>
+									<span class="badge badge-primary ml-1">必須</span>
+								</div>
+								<div class="col mb-2">
+									{{ form_widget(form.record_level ) }}
+									{{ form_errors(form.record_level ) }}
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="card rounded border-0 mb-4">
+						<div class="card-header">
+							<span>詳細機能設定</span>
+						</div>
+						<div class="card-body">
+							<div class="row">
+								<div class="col-3">
+									<span>エラー記録重複排除時間（秒）</span>
+									<span class="badge badge-primary ml-1">必須</span>
+								</div>
+								<div class="col mb-2">
+									{{ form_widget(form.record_deduplicated_time) }}
+									{{ form_errors(form.record_deduplicated_time) }}
+									<p>大量のログの記録を回避するために、設定秒数内の重複したログを排除します。</p>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-3">
+									<span>エラー送信重複排除時間（秒）</span>
+									<span class="badge badge-primary ml-1">必須</span>
+								</div>
+								<div class="col mb-2">
+									{{ form_widget(form.send_deduplicated_time ) }}
+									{{ form_errors(form.send_deduplicated_time ) }}
+									<p>大量のログの送信を回避するために、設定秒数内の重複したログを排除します。</p>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="card rounded border-0 mb-4">
+						<div class="card-header">
+							<span>エラーレベルの設定について</span>
+						</div>
+						<div class="card-body">
+							<div class="row">
+								<div class="col-12 mb-2">
+									<table style="width:100%;">
+										<thead>
+											<tr>
+												<th>レベル</th>
+												<th>内容</th>
+												<th>テストURL</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>DEBUG</td>
+												<td>詳細なデバッグ情報</td>
+												<td>
+													<a href="{{ url('error_notify_admin_config_errorsample',{'level':'debug'}) }}">DEBUG</a>
+												</td>
+											</tr>
+											<tr>
+												<td>INFO</td>
+												<td>興味深いイベント<br>例：ユーザーログイン、SQLログ。</td>
+												<td>
+													<a href="{{ url('error_notify_admin_config_errorsample',{'level':'info'}) }}">INFO</a>
+												</td>
+											</tr>
+											<tr>
+												<td>NOTICE</td>
+												<td>珍しいイベント</td>
+												<td>
+													<a href="{{ url('error_notify_admin_config_errorsample',{'level':'notice'}) }}">NOTICE</a>
+												</td>
+											</tr>
+											<tr>
+												<td>WARNING</td>
+												<td>
+													エラーではない例外的な発生<br>
+													例：非推奨のAPIの使用、APIの不適切な使用、 必ずしも間違っているとは限らない望ましくないこと。
+												</td>
+												<td>
+													<a href="{{ url('error_notify_admin_config_errorsample',{'level':'warning'}) }}">WARNING</a>
+												</td>
+											</tr>
+											<tr>
+												<td>ERROR</td>
+												<td>ランタイムエラー</td>
+												<td>
+													<a href="{{ url('error_notify_admin_config_errorsample',{'level':'error'}) }}">ERROR</a>
+												</td>
+											</tr>
+											<tr>
+												<td>CRITICAL</td>
+												<td>
+													重大な状態
+													<br>
+													例：アプリケーションコンポーネントが利用できない、予期しない例外。
+												</td>
+												<td>
+													<a href="{{ url('error_notify_admin_config_errorsample',{'level':'critical'}) }}">CRITICAL</a>
+												</td>
+											</tr>
+											<tr>
+												<td>ALERT</td>
+												<td>
+													すぐに行動を起こす必要があります<br>
+													例：ウェブサイト全体がダウンしている、データベースが利用できないなど。<br>
+													これにより、SMSアラートがトリガーされ、目覚めます。
+												</td>
+												<td>
+													<a href="{{ url('error_notify_admin_config_errorsample',{'level':'alert'}) }}">ALERT</a>
+												</td>
+											</tr>
+											<tr>
+												<td>EMERGENCY</td>
+												<td>緊急警報</td>
+												<td>
+													<a href="{{ url('error_notify_admin_config_errorsample',{'level':'emergency'}) }}">EMERGENCY</a>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+									<br><br>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-12">
+									<h5>設定方法について</h5>
+									<p>
+										設定方法については下記ページをご確認ください。<br>
+										<a href="https://soft-machine.net/error_notify/" target="_blank">ErroNitify</a>
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="c-conversionArea">
+			<div class="c-conversionArea__container">
+				<div class="row justify-content-between align-items-center">
+					<div class="col-6">
+						<div class="c-conversionArea__leftBlockItem">
+							<a class="c-baseLink" href="{{ url('admin_store_plugin') }}">
+								<i class="fa fa-backward" aria-hidden="true"></i>
+								<span>プラグイン一覧</span>
+							</a>
+						</div>
+					</div>
+					<div class="col-6">
+						<div class="row align-items-center justify-content-end">
+							<div class="col-auto">
+								<button class="btn btn-ec-conversion px-5" type="submit">登録</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+{% endblock %}

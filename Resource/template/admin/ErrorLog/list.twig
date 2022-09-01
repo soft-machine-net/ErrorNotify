@@ -1,0 +1,87 @@
+{% extends '@admin/default_frame.twig' %}
+{% set menus = ['setting', 'error_notify', 'index'] %}
+{% block title %}ErrorNotify
+{% endblock %}
+{% block sub_title %}Error Notify
+{% endblock %}
+{% block stylesheet %}
+	<style>
+		table tbody tr td:first-child,
+		table thead tr th:first-child {
+			padding-left: 10px !important;
+		}
+	</style>
+{% endblock %}
+{% block main %}
+	<div class="c-contentsArea__cols">
+		<div class="c-primaryCol">
+			<div class="row justify-content-between mb-2">
+				<div class="col-6"></div>
+				<div class="col-5 text-right">
+					<div class="d-inline-block mr-2">
+						<div>
+							表示件数
+							<select class="custom-select" onchange="location = this.value;">
+								{% for pageMax in pageMaxis %}
+									<option {% if pageMax.name == page_count %} selected="" {% endif %} value="{{ path('admin_error_notify_page', {'page_no': 1, 'page_count': pageMax.name, 'min_level': min_level }) }}">{{ 'admin.common.count'|trans({ '%count%': pageMax.name }) }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+					{# <div class="d-inline-block mr-2">
+															                    <div>
+															                        ログレベル
+															                        <select class="custom-select" onchange="location = this.value;">
+															                            {% for level_id, level in levels %}
+															                                <option {% if level_id == min_level %}selected=""{% endif %} value="{{ path('admin_error_notify_page', {'page_no': 1, 'page_count': page_count, 'min_level': level_id}) }}">{{ level }}</option>
+															                            {% endfor %}
+															                        </select>
+															                    </div>
+															                </div> #}
+				</div>
+			</div>
+			<div class="card">
+				<table class="table table-sm">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>日付</th>
+							<th>リクエスト</th>
+							<th>レベル</th>
+							<th>メソッド</th>
+							<th>エラー内容詳細</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% if pagination.totalItemCount > 0 %}
+							{% for log in pagination %}
+								<tr>
+									<td>{{ log.id }}</td>
+									<td>{{ log.datetime.format('Y/m/d  H:i:s') }}</td>
+									<td>
+										<a href="{{ log.url }}" target="_blank">{{ log.url }}</a>
+									</td>
+									<td>{{ log.level }}</td>
+									<td>{{ log.method }}</td>
+									<td>
+										<a href="{{ url('error_notify_detail',{'id':log.id}) }}">詳細</a>
+									</td>
+								</tr>
+							{% endfor %}
+						{% else %}
+							<tr>
+								<td colspan="6" style="text-align:center;">エラーログがありません。<br>また改めてご確認ください。</td>
+							</tr>
+						{% endif %}
+					</tbody>
+				</table>
+			</div>
+			<br><br>
+			{% if pagination.totalItemCount > 0 %}
+				<div class="row justify-content-md-center mb-4 pb-4">
+					{% include "@admin/pager.twig" with { 'pages' : pagination.paginationData, 'routes' : 'admin_error_notify_page' } %}
+				</div>
+			{% endif %}
+		</div>
+	</div>
+{% endblock %}

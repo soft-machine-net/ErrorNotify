@@ -1,0 +1,62 @@
+{% extends '@admin/default_frame.twig' %}
+{% set menus = ['setting', 'error_notify', 'index'] %}
+
+{% block title %}ErrorNotify
+{% endblock %}
+{% block sub_title %}Error Notify
+{% endblock %}
+{% block stylesheet %}
+	<style>
+		table {
+			table-layout: fixed;
+		}
+	</style>
+{% endblock %}
+{% block main %}
+	<div class="c-contentsArea__cols">
+		<div class="c-primaryCol">
+			<div class="card">
+				<table class="table table-sm">
+					<tbody>
+						<tr>
+							<th>ID</th>
+							<td>{{ ErrorLog.id }}</td>
+						</tr>
+						<tr>
+							<th>Timestamp</th>
+							<td>{{ ErrorLog.datetime.format('Y/m/d H:i:s') }}</td>
+						</tr>
+						<tr>
+							<th>Level</th>
+							<td>{{ ErrorLog.level }}</td>
+						</tr>
+						<tr>
+							<th>URL</th>
+							<td>
+								<a href="{{ ErrorLog.url }}" target="_blank">{{ ErrorLog.url }}</a>
+							</td>
+						</tr>
+						<tr>
+							<th>Method</th>
+							<td>{{ ErrorLog.method }}</td>
+						</tr>
+						<tr>
+							<th>UserAgent</th>
+							<td>{{ ErrorLog.userAgent }}</td>
+						</tr>
+						<tr>
+							<th>IP Address</th>
+							<td>{{ ErrorLog.ipAddress }}</td>
+						</tr>
+						<tr>
+							<th colspan='2'>Contents</th>
+						</tr>
+						<tr>
+							<td colspan="2">{{ ErrorLog.content|raw }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+{% endblock %}

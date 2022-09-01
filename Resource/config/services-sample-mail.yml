@@ -1,0 +1,9 @@
+
+        # メール送信機能
+        deduplicated_mailer:
+            type:    deduplication
+            handler: custom_mailer
+            time: '%send_deduplicated_time%'
+        custom_mailer:
+            type: service
+            id: plugin.error_notify.monolog.handler.error_log_mailer_handler

@@ -1,0 +1,23 @@
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['setting', 'error_notify', 'setting'] %}
+
+{% block title %}ErrorNotify
+{% endblock %}
+{% block sub_title %}Error Notify
+{% endblock %}
+{% block stylesheet %}{% endblock %}
+{% block main %}
+	<div class="c-contentsArea__cols">
+		<div class="c-primaryCol">
+			{% if level is defined %}
+				{{ level }}レベルのサンプルページです。<br>
+				ページを表示したタイミングで「{{ level }}」レベルのログを出力しています。<br>
+				ログレベル設定の動作テストなどに利用してください。
+			{% else %}
+				レベルの指定に不備があります。<br>
+				URLを確認してください。
+			{% endif %}
+		</div>
+	</div>
+{% endblock %}

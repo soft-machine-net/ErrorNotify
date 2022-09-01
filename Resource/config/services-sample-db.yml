@@ -1,0 +1,9 @@
+
+        # DB保存きのう
+        deduplicated_doctrine:
+            type:    deduplication
+            handler: doctrine
+            time: '%record_deduplicated_time%'
+        doctrine:
+            type: service
+            id: plugin.error_notify.monolog.handler.error_log_db_handler

@@ -1,0 +1,12 @@
+{
+  "name": "ec-cube/errornotify",
+  "version": "1.0.0",
+  "description": "ErrorNotify",
+  "type": "eccube-plugin",
+  "require": {
+    "ec-cube/plugin-installer": "~0.0.7 || ^2.0"
+  },
+  "extra": {
+    "code": "ErrorNotify"
+  }
+}
